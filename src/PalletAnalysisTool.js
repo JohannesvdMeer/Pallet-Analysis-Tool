@@ -107,7 +107,9 @@ const PalletAnalysisTool = () => {
       const palletType = row['Omschrijving']?.trim() || 'Onbekend';
       const customer = row['Klant'] || 'Onbekend';
       const colli = parseFloat(row['Colli'] || 0);
-      const weight = parseFloat(row['Bruto'] || 0);
+      // Converteer komma naar punt voor correcte decimal handling in Nederlands formaat
+      const weightStr = (row['Bruto'] || '0').replace(',', '.');
+      const weight = parseFloat(weightStr);
       
       // Add to totals
       totalColli += colli;
