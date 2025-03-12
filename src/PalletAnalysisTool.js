@@ -5,7 +5,7 @@ import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Toolti
 const PalletAnalysisTool = () => {
   const [activeTab, setActiveTab] = useState('interface');
   const [rawData, setRawData] = useState('');
-  const [parsedData, setParsedData] = useState(null);
+  // Verwijderde ongebruikte state: parsedData
   const [analysisResults, setAnalysisResults] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +23,7 @@ const PalletAnalysisTool = () => {
       // Process the pasted data
       const processed = processData(clipboardText);
       if (processed) {
-        setParsedData(processed.data);
+        // Verwijderde ongebruikte setParsedData aanroep
         setAnalysisResults(processed.results);
         setActiveTab('results');
       }
@@ -178,7 +178,7 @@ const PalletAnalysisTool = () => {
   // Handle clearing all data
   const handleClearData = () => {
     setRawData('');
-    setParsedData(null);
+    // Verwijderde ongebruikte setParsedData aanroep
     setAnalysisResults(null);
     setError('');
     setActiveTab('interface');
@@ -193,7 +193,7 @@ const PalletAnalysisTool = () => {
     
     const processed = processData(rawData);
     if (processed) {
-      setParsedData(processed.data);
+      // Verwijderde ongebruikte setParsedData aanroep
       setAnalysisResults(processed.results);
       setActiveTab('results');
     }
