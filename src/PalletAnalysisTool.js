@@ -343,6 +343,7 @@ const PalletAnalysisTool = () => {
                     <tr>
                       <th className="py-2 px-4 border-b text-left">Type Pallet</th>
                       <th className="py-2 px-4 border-b text-right">Aantal</th>
+                      <th className="py-2 px-4 border-b text-right">Percentage</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -350,6 +351,9 @@ const PalletAnalysisTool = () => {
                       <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                         <td className="py-2 px-4 border-b">{palletType.type}</td>
                         <td className="py-2 px-4 border-b text-right">{palletType.count}</td>
+                        <td className="py-2 px-4 border-b text-right">
+                          {((palletType.count / analysisResults.totalPallets) * 100).toFixed(1)}%
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -359,10 +363,10 @@ const PalletAnalysisTool = () => {
             
             {/* Customer Table */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-3">Top Klanten</h3>
-              <div className="overflow-x-auto">
+              <h3 className="text-lg font-semibold mb-3">Klanten</h3>
+              <div className="overflow-x-auto max-h-96 overflow-y-auto">
                 <table className="min-w-full bg-white">
-                  <thead className="bg-gray-100">
+                  <thead className="bg-gray-100 sticky top-0">
                     <tr>
                       <th className="py-2 px-4 border-b text-left">Klant</th>
                       <th className="py-2 px-4 border-b text-right">Aantal Pallets</th>
@@ -371,7 +375,7 @@ const PalletAnalysisTool = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {analysisResults.topCustomers.map((customer, index) => (
+                    {analysisResults.allCustomers.map((customer, index) => (
                       <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                         <td className="py-2 px-4 border-b">{customer.name}</td>
                         <td className="py-2 px-4 border-b text-right">{customer.pallets.toLocaleString()}</td>
@@ -388,7 +392,7 @@ const PalletAnalysisTool = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Bar Chart - Customers */}
               <div className="bg-white p-4 rounded shadow">
-                <h3 className="text-lg font-semibold mb-3">Top Klanten (aantal pallets)</h3>
+                <h3 className="text-lg font-semibold mb-3">Top 5 Klanten (aantal pallets)</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={analysisResults.topCustomers}>
                     <CartesianGrid strokeDasharray="3 3" />
