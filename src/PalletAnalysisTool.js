@@ -101,13 +101,12 @@ const PalletAnalysisTool = () => {
   };
 
   // Calculate results from parsed data
-  const calculateResults = (data) => {
+  const calculateResults = (data, palletColumnName) => {
     // If we don't have data or it's empty, return null
     if (!data || data.length === 0) return null;
 
     // Track unique pallet numbers and their types
     const uniquePallets = new Set();
-    const palletTypes = {};
     
     // Initial calculations
     let totalColli = 0;
@@ -117,17 +116,20 @@ const PalletAnalysisTool = () => {
     // First pass: collect unique pallet numbers and their types
     const palletTypeMap = new Map(); // Map pallet number to its type
     data.forEach(row => {
-      const palletNumber = row['Pallet (49)']?.trim() || '';
+      const palletNumber = row[palletColumnName]?.trim() || '';
       const palletType = row['Omschrijving']?.trim() || 'Onbekend';
       
-      // Store the type for this pallet number
-      palletTypeMap.set(palletNumber, palletType);
+      // Store the type for this pallet number (first occurrence only)
+      if (!palletTypeMap.has(palletNumber)) {
+        palletTypeMap.set(palletNumber, palletType);
+      }
       
       // Track unique pallet by number
       uniquePallets.add(palletNumber);
     });
     
     // Second pass: count pallets by type
+    const palletTypes = {};
     palletTypeMap.forEach((type, palletNumber) => {
       if (!palletTypes[type]) {
         palletTypes[type] = 0;
@@ -137,8 +139,7 @@ const PalletAnalysisTool = () => {
     
     // Third pass: process all data for other calculations
     data.forEach(row => {
-      const palletNumber = row['Pallet (49)']?.trim() || '';
-      const palletType = row['Omschrijving']?.trim() || 'Onbekend';
+      const palletNumber = row[palletColumnName]?.trim() || '';
       const customer = row['Klant'] || 'Onbekend';
       const colli = parseFloat(row['Colli'] || 0);
       
