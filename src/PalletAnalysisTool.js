@@ -65,6 +65,20 @@ const PalletAnalysisTool = () => {
     // Parse the header
     const headers = rows[headerRowIndex].split('\t');
     
+    // Identify the pallet column name (which might be Pallet (49), Pallet (51), etc.)
+    let palletColumnName = '';
+    for (let i = 0; i < headers.length; i++) {
+      if (headers[i].trim().startsWith('Pallet (')) {
+        palletColumnName = headers[i].trim();
+        break;
+      }
+    }
+    
+    if (!palletColumnName) {
+      setError('Geen pallet kolom gevonden in de gegevens. Controleer de data.');
+      return null;
+    }
+    
     // Parse the data rows
     const parsedRows = [];
     for (let i = headerRowIndex + 1; i < rows.length; i++) {
@@ -81,7 +95,7 @@ const PalletAnalysisTool = () => {
     }
 
     // Calculate analysis results
-    const results = calculateResults(parsedRows);
+    const results = calculateResults(parsedRows, palletColumnName);
     
     return { data: parsedRows, results };
   };
