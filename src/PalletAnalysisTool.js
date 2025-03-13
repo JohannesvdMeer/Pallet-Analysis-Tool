@@ -100,13 +100,34 @@ const PalletAnalysisTool = () => {
     let totalWeight = 0;
     const customerDict = {};
 
-    // Process each row and track unique pallets by type
+    // First pass: collect unique pallet numbers and their types
+    const palletTypeMap = new Map(); // Map pallet number to its type
     data.forEach(row => {
-      // Extract the pallet number from the first column (format: "5839141")
+      const palletNumber = row['Pallet (49)']?.trim() || '';
+      const palletType = row['Omschrijving']?.trim() || 'Onbekend';
+      
+      // Store the type for this pallet number
+      palletTypeMap.set(palletNumber, palletType);
+      
+      // Track unique pallet by number
+      uniquePallets.add(palletNumber);
+    });
+    
+    // Second pass: count pallets by type
+    palletTypeMap.forEach((type, palletNumber) => {
+      if (!palletTypes[type]) {
+        palletTypes[type] = 0;
+      }
+      palletTypes[type]++;
+    });
+    
+    // Third pass: process all data for other calculations
+    data.forEach(row => {
       const palletNumber = row['Pallet (49)']?.trim() || '';
       const palletType = row['Omschrijving']?.trim() || 'Onbekend';
       const customer = row['Klant'] || 'Onbekend';
       const colli = parseFloat(row['Colli'] || 0);
+      
       // Converteer komma naar punt voor correcte decimal handling in Nederlands formaat
       const weightStr = (row['Bruto'] || '0').replace(',', '.');
       const weight = parseFloat(weightStr);
@@ -114,15 +135,6 @@ const PalletAnalysisTool = () => {
       // Add to totals
       totalColli += colli;
       totalWeight += weight;
-      
-      // Track unique pallet by number
-      uniquePallets.add(palletNumber);
-      
-      // Track palette types
-      if (!palletTypes[palletType]) {
-        palletTypes[palletType] = new Set();
-      }
-      palletTypes[palletType].add(palletNumber);
       
       // Update customer dictionary
       if (customerDict[customer]) {
@@ -146,7 +158,7 @@ const PalletAnalysisTool = () => {
     // Convert pallet types to array of counts
     const palletTypeCounts = Object.keys(palletTypes).map(type => ({
       type: type,
-      count: palletTypes[type].size
+      count: palletTypes[type]
     }));
     
     // Sort pallet types by count (descending)
